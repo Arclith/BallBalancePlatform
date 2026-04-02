@@ -69,9 +69,7 @@ esp_err_t ov7670_drv_install(void)
         .grab_mode = CAMERA_GRAB_WHEN_EMPTY, 
     };
 
-    // 【核心修改 2】
-    // 官方驱动在扫描时非常快，OV7670 可能还没准备好。
-    // 我们手动做一次硬复位，确保时序。
+
     gpio_config_t rst_conf = {
         .pin_bit_mask = (1ULL << CAM_PIN_RESET) | (1ULL << CAM_PIN_PWDN),
         .mode = GPIO_MODE_OUTPUT,
