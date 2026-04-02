@@ -1,0 +1,8 @@
+[submodule "esp32"]
+	path = esp32
+	url = https://github.com/Arclith/BallBalancePlatform_esp32.git
+	branch = main
+[submodule "stm32_rtthread"]
+	path = stm32_rtthread
+	url = https://github.com/Arclith/BallBalancePlatform_stm32.git
+	branch = main
