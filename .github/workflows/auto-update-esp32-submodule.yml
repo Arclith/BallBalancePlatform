@@ -1,0 +1,39 @@
+name: Auto update esp32 submodule
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 每天 UTC 02:30（北京时间 10:30）
+    - cron: "30 2 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-esp32-submodule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update esp32 submodule to latest main
+        run: |
+          git submodule update --init --remote esp32
+
+      - name: Commit and push if pointer changed
+        run: |
+          if git diff --quiet -- esp32; then
+            echo "esp32 submodule pointer unchanged"
+            exit 0
+          fi
+
+          git add esp32
+          git commit -m "chore(submodule): auto-update esp32 to latest main"
+          git push origin HEAD:main
