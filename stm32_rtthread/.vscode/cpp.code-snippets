@@ -1,0 +1,27 @@
+{
+    "Common header skeleton": {
+        "prefix": "myh",
+        "body": [
+            "#ifndef ${TM_FILENAME_BASE/(.*)/${1:/upcase}_H/}",
+            "#define ${TM_FILENAME_BASE/(.*)/${1:/upcase}_H/}",
+            "",
+            "#include \"${2:stm32f1xx_hal.h}\"  // 必要 HAL 头",
+            "#include <${3:stdint.h}>",
+            "",
+            "#ifdef __cplusplus",
+            "extern \"C\" {",
+            "#endif",
+            "",
+            "// 模块可选的类型定义、结构体、宏等",
+            "",
+            "void ${4:Module_Init}(void);",
+            "",
+            "#ifdef __cplusplus",
+            "}",
+            "#endif",
+            "",
+            "#endif /* ${TM_FILENAME_BASE/(.*)/${1:/upcase}_H/} */"
+        ],
+        "description": "通用 C 头文件框架"
+    }
+}

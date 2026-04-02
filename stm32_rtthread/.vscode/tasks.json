@@ -1,0 +1,255 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "jswyll-vscode-rtthread: monitor",
+            "detail": "彩色串口监视器",
+            "type": "shell",
+            "command": "\"D:/STM32_project/stm32_rtthread/.venv/Scripts/python.exe\" tools/serial_monitor.py",
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "jswyll-vscode-rtthread: pkgs --update",
+            "detail": "更新软件包",
+            "type": "shell",
+            "command": "pkgs",
+            "args": [
+                "--update"
+            ],
+            "options": {
+                "env": {
+                    "PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/bin:d:/RT-ThreadStudio/platform/env_released/env/tools/qemu/qemu64:d:/RT-ThreadStudio/platform/env_released/env/tools/Python27:d:/RT-ThreadStudio/platform/env_released/env/tools/Python27/Scripts:d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin:d:/RT-ThreadStudio/platform/env_released/env/tools/BuildTools/2.12-20190422-1053/bin:${env:PATH}",
+                    "ENV_DIR": "d:/RT-ThreadStudio/platform/env_released/env",
+                    "ENV_ROOT": "d:/RT-ThreadStudio/platform/env_released/env",
+                    "RTT_CC": "gcc",
+                    "RTT_DIR": "rt-thread",
+                    "RTT_ROOT": "rt-thread",
+                    "BSP_DIR": ".",
+                    "BSP_ROOT": ".",
+                    "PYTHONHOME": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27",
+                    "PYTHONPATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27",
+                    "SCONS": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27/Scripts",
+                    "RTT_EXEC_PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin",
+                    "PKGS_DIR": "d:/RT-ThreadStudio/platform/env_released/env/packages",
+                    "PKGS_ROOT": "d:/RT-ThreadStudio/platform/env_released/env/packages"
+                }
+            },
+            "windows": {
+                "command": "cmd.exe",
+                "args": [
+                    "/c",
+                    "chcp 437 && pkgs --update"
+                ],
+                "options": {
+                    "env": {
+                        "PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/bin;d:/RT-ThreadStudio/platform/env_released/env/tools/qemu/qemu64;d:/RT-ThreadStudio/platform/env_released/env/tools/Python27;d:/RT-ThreadStudio/platform/env_released/env/tools/Python27/Scripts;d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin;d:/RT-ThreadStudio/platform/env_released/env/tools/BuildTools/2.12-20190422-1053/bin;${env:PATH}",
+                        "ENV_DIR": "d:/RT-ThreadStudio/platform/env_released/env",
+                        "ENV_ROOT": "d:/RT-ThreadStudio/platform/env_released/env",
+                        "RTT_CC": "gcc",
+                        "RTT_DIR": "rt-thread",
+                        "RTT_ROOT": "rt-thread",
+                        "BSP_DIR": ".",
+                        "BSP_ROOT": ".",
+                        "PYTHONHOME": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27",
+                        "PYTHONPATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27",
+                        "SCONS": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27/Scripts",
+                        "RTT_EXEC_PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin",
+                        "PKGS_DIR": "d:/RT-ThreadStudio/platform/env_released/env/packages",
+                        "PKGS_ROOT": "d:/RT-ThreadStudio/platform/env_released/env/packages"
+                    }
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "jswyll-vscode-rtthread: scons --target=vsc",
+            "detail": "生成或更新C/C++配置",
+            "type": "shell",
+            "command": "scons",
+            "args": [
+                "--target=vsc",
+                "--silent"
+            ],
+            "options": {
+                "env": {
+                    "PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/bin:d:/RT-ThreadStudio/platform/env_released/env/tools/qemu/qemu64:d:/RT-ThreadStudio/platform/env_released/env/tools/Python27:d:/RT-ThreadStudio/platform/env_released/env/tools/Python27/Scripts:d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin:d:/RT-ThreadStudio/platform/env_released/env/tools/BuildTools/2.12-20190422-1053/bin:${env:PATH}",
+                    "ENV_DIR": "d:/RT-ThreadStudio/platform/env_released/env",
+                    "ENV_ROOT": "d:/RT-ThreadStudio/platform/env_released/env",
+                    "RTT_CC": "gcc",
+                    "RTT_DIR": "rt-thread",
+                    "RTT_ROOT": "rt-thread",
+                    "BSP_DIR": ".",
+                    "BSP_ROOT": ".",
+                    "PYTHONHOME": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27",
+                    "PYTHONPATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27",
+                    "SCONS": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27/Scripts",
+                    "RTT_EXEC_PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin",
+                    "PKGS_DIR": "d:/RT-ThreadStudio/platform/env_released/env/packages",
+                    "PKGS_ROOT": "d:/RT-ThreadStudio/platform/env_released/env/packages"
+                }
+            },
+            "windows": {
+                "command": "cmd.exe",
+                "args": [
+                    "/c",
+                    "chcp 437 && scons --target=vsc --silent"
+                ],
+                "options": {
+                    "env": {
+                        "PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/bin;d:/RT-ThreadStudio/platform/env_released/env/tools/qemu/qemu64;d:/RT-ThreadStudio/platform/env_released/env/tools/Python27;d:/RT-ThreadStudio/platform/env_released/env/tools/Python27/Scripts;d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin;d:/RT-ThreadStudio/platform/env_released/env/tools/BuildTools/2.12-20190422-1053/bin;${env:PATH}",
+                        "ENV_DIR": "d:/RT-ThreadStudio/platform/env_released/env",
+                        "ENV_ROOT": "d:/RT-ThreadStudio/platform/env_released/env",
+                        "RTT_CC": "gcc",
+                        "RTT_DIR": "rt-thread",
+                        "RTT_ROOT": "rt-thread",
+                        "BSP_DIR": ".",
+                        "BSP_ROOT": ".",
+                        "PYTHONHOME": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27",
+                        "PYTHONPATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27",
+                        "SCONS": "d:/RT-ThreadStudio/platform/env_released/env/tools/Python27/Scripts",
+                        "RTT_EXEC_PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin",
+                        "PKGS_DIR": "d:/RT-ThreadStudio/platform/env_released/env/packages",
+                        "PKGS_ROOT": "d:/RT-ThreadStudio/platform/env_released/env/packages"
+                    }
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "jswyll-vscode-rtthread: build",
+            "detail": "构建",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j16",
+                "all",
+                "--output-sync=target"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Debug",
+                "env": {
+                    "PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/BuildTools/2.12-20190422-1053/bin:d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin:${env:PATH}"
+                }
+            },
+            "windows": {
+                "command": "cmd.exe",
+                "args": [
+                    "/c",
+                    "cd /d ${workspaceFolder}\\Debug && make -j16 all && \"%cd%\\..\\tools\\run_print_size.bat\" rtthread.elf"
+                ],
+                "options": {
+                    "env": {
+                        "PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/BuildTools/2.12-20190422-1053/bin;d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin;${env:PATH}"
+                    }
+                }
+            },
+            "problemMatcher": [
+                {
+                    "fileLocation": [
+                        "autoDetect",
+                        "${workspaceFolder}/Debug"
+                    ],
+                    "source": "gcc",
+                    "pattern": {
+                        "regexp": "^(.*?):(\\d+):(\\d*):?\\s+(?:fatal\\s+)?(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                },
+                {
+                    "fileLocation": [
+                        "autoDetect",
+                        "${workspaceFolder}/Debug"
+                    ],
+                    "pattern": {
+                        "regexp": "^.+\\/bin\\/ld[^:]+:\\s*(.+):(\\d+):(.+)$",
+                        "file": 1,
+                        "line": 2,
+                        "message": 3
+                    },
+                    "severity": "error",
+                    "source": "gcc"
+                }
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "jswyll-vscode-rtthread: build and download",
+            "detail": "构建并下载",
+            "dependsOn": [
+                "jswyll-vscode-rtthread: build",
+                "jswyll-vscode-rtthread: download"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "jswyll-vscode-rtthread: clean",
+            "detail": "清除",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j16",
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Debug",
+                "env": {
+                    "PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/BuildTools/2.12-20190422-1053/bin:d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin:${env:PATH}"
+                }
+            },
+            "windows": {
+                "command": "cmd.exe",
+                "args": [
+                    "/c",
+                    "make -j16 clean"
+                ],
+                "options": {
+                    "env": {
+                        "PATH": "d:/RT-ThreadStudio/platform/env_released/env/tools/BuildTools/2.12-20190422-1053/bin;d:/RT-ThreadStudio/platform/env_released/env/tools/gnu_gcc/arm_gcc/mingw/bin;${env:PATH}"
+                    }
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "jswyll-vscode-rtthread: rebuild",
+            "detail": "重新构建",
+            "dependsOn": [
+                "jswyll-vscode-rtthread: clean",
+                "jswyll-vscode-rtthread: build"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "jswyll-vscode-rtthread: download",
+            "detail": "下载",
+            "type": "shell",
+            "command": "d:/RT-ThreadStudio/repo/Extract/Debugger_Support_Packages/STMicroelectronics/ST-LINK_Debugger/1.6.0/tools/bin/STM32_Programmer_CLI",
+            "args": [
+                "-c",
+                "port=SWD",
+                "-d",
+                "Debug/rtthread.elf",
+                "-s"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}

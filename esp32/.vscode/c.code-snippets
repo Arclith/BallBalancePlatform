@@ -1,0 +1,22 @@
+{
+  "C Header Template": {
+    "prefix": "myh",
+    "body": [
+      "#ifndef ${TM_FILENAME_BASE/(.*)/${1:/upcase}/g}_H",
+      "#define ${TM_FILENAME_BASE/(.*)/${1:/upcase}/g}_H",
+      "",
+      "#ifdef __cplusplus",
+      "extern \"C\" {",
+      "#endif",
+      "",
+      "$0",
+      "",
+      "#ifdef __cplusplus",
+      "}",
+      "#endif",
+      "",
+      "#endif /* ${TM_FILENAME_BASE/(.*)/${1:/upcase}/g}_H */"
+    ],
+    "description": "Generate a standard C header template with guards"
+  }
+}

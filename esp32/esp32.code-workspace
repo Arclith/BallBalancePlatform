@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../v5.5.1/esp-idf"
+		},
+		{
+			"path": "../stm32_rtthread"
+		}
+	],
+	"settings": {
+		"terminal.integrated.env.windows": {
+			"IDF_PY_COLORS": "1",
+			"FORCE_COLOR": "1",
+			"PY_COLORS": "1"
+		}
+		,
+		"actionButtons": {
+			"defaultColor": "#ff0034",
+			"loadNpmCommands": false,
+			"reloadButton": "♻️",
+			"inheritGlobalCommands": false,
+			"commands": [
+
+			]
+		}
+	}
+}

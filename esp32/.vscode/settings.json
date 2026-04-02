@@ -1,0 +1,48 @@
+{
+  "workbench.editorAssociations": {
+    "*.hex": "hexEditor.hexedit",
+    "*.ini": "hexEditor.hexedit",
+    "*.copilotmd": "vscode.markdown.preview.editor",
+    "{hexdiff}:/**/*.*": "hexEditor.hexedit",
+    "*.bin": "hexEditor.hexedit"
+  },
+  "C_Cpp.intelliSenseEngine": "default",
+  "idf.espIdfPathWin": "d:\\v5.5.1\\esp-idf",
+  "idf.pythonInstallPath": "d:\\esp-idf-tools\\tools\\idf-python\\3.11.2\\python.exe",
+  "idf.openOcdConfigs": [
+    "board/esp32s3-builtin.cfg", 
+  ],
+  "idf.toolsPathWin": "d:\\esp-idf-tools",
+  "idf.customExtraVars": {
+    "IDF_TARGET": "esp32s3"
+  },
+  "clangd.path": "d:\\esp-idf-tools\\tools\\esp-clang\\esp-19.1.2_20250312\\esp-clang\\bin\\clangd.exe",
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=d:\\esp-idf-tools\\tools\\xtensa-esp-elf\\esp-14.2.0_20241119\\xtensa-esp-elf\\bin\\xtensa-esp32-elf-gcc.exe",
+    "--compile-commands-dir=${workspaceFolder}\\build"
+  ],
+  "idf.flashType": "JTAG",
+  "idf.portWin": "COM6",
+  "terminal.integrated.env.windows": {
+    "IDF_PY_COLORS": "1",
+    "FORCE_COLOR": "1",
+    "PY_COLORS": "1"
+  },
+  "actionButtons": {
+    "defaultColor": "#ff0034", // Can also use string color names.
+    "loadNpmCommands": false, // Disables automatic generation of actions for npm commands.
+    "reloadButton": "♻️", // Custom reload button text or icon (default ↻). null value enables automatic reload on configuration change
+    "inheritGlobalCommands": false, // In case you use workspace-scope settings, and want to also use User (global) scope settings, you might enable this
+    "commands": [
+        {
+            "cwd": "${workspaceFolder}",
+            "name": "$(play) 启动 Camera Viewer",
+            "color": "yellow",
+            "command": " & D:/STM32_project/esp32/.venv/Scripts/python.exe d:/STM32_project/esp32/camera_viewer.py"
+        }
+    ]
+},
+"idf.currentSetup": "d:\\v5.5.1\\esp-idf"
+}
+
