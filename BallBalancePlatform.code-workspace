@@ -1,0 +1,11 @@
+{
+    "folders": [
+        {
+            "path": "stm32_rtthread"
+        },
+        {
+            "path": "esp32"
+        }
+    ],
+    "settings": {}
+}
