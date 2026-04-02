@@ -1,4 +1,4 @@
-name: Auto update esp32 submodule
+name: Auto update submodules
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  update-esp32-submodule:
+  update-submodules:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -23,17 +23,18 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Update esp32 submodule to latest main
+      - name: Update submodules to latest main
         run: |
           git submodule update --init --remote esp32
+          git submodule update --init --remote stm32_rtthread
 
       - name: Commit and push if pointer changed
         run: |
-          if git diff --quiet -- esp32; then
-            echo "esp32 submodule pointer unchanged"
+          if git diff --quiet -- esp32 stm32_rtthread; then
+            echo "submodule pointers unchanged"
             exit 0
           fi
 
-          git add esp32
-          git commit -m "chore(submodule): auto-update esp32 to latest main"
+          git add esp32 stm32_rtthread
+          git commit -m "chore(submodule): auto-update esp32 and stm32_rtthread"
           git push origin HEAD:main
