@@ -1,10 +1,9 @@
 name: Auto update submodules
 
 on:
-  workflow_dispatch:
-  schedule:
-    # 每天 UTC 02:30（北京时间 10:30）
-    - cron: "30 2 * * *"
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
