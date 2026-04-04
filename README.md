@@ -108,7 +108,10 @@ esp32/
 
 ## 🧠 软件设计与实现
 
-### 1) 线程与 IPC 设计
+## 1) 线程与 IPC 设计
+
+### STM32 部分（RT-Thread）
+
 | 线程 | 文件 | 优先级 | 频率/触发 | 作用 | IPC / 同步机制 |
 |---|---|---|---|---|---|
 | `communicate_thread` | `_threads/communicate_thread.c` | 6 (较高) | 事件驱动 | 与 ESP32 通信，解析帧、ACK 重发、写入队列 | `rt_mq_t mq_xy` (Pro) |
@@ -116,6 +119,15 @@ esp32/
 | `mpu_thread` | `_threads/mpu_thread.c` | 15 (中) | 1kHz (1ms延时) | MPU6050 采样 + 角度计算 | `rt_mb_t mb_mpu` (Sync) |
 | `keypad_thread` | `_threads/keypad_thread.c` | 18 (较低) | 50Hz (20ms延时) | 矩阵键盘扫描与去抖 | `rt_sem_release` (Signal) |
 | `oled_thread` | `_threads/oled_thread.c` | 20 (较低) | 5Hz (200ms延时) | OLED 渲染 + 页面切换 | `rt_mb_t mb_to_oled` (Msg) |
+
+### ESP32 部分（FreeRTOS）
+
+| 任务 | 文件 | 优先级 | 频率/触发 | 作用 |
+|---|---|---|---|---|
+| `cam_task` | `main/task/cam_task.c` | 21 (高) | 50Hz (摄像头驱动) | 采集图像、二值化/裁剪、质心计算、发送坐标 |
+| `communicate_task` | `main/task/communicate_task.c` | 20 (中高) | 消息驱动 | UART 帧协议发送坐标/帧率 |
+| `lcd_task` | `main/task/lcd_task.c` | 19 (中) | 信号量驱动 | 将二值图像输出到 TFT，统计显示帧率 |
+| `shell_task` | `main/task/shell_task.c` | 5 (低) | 命令行输入驱动 | USB-JTAG 监控 shell（任务、堆栈、内存） |
 
 #### 关键同步与互斥设计
 1. **STM32 外设互斥**：
@@ -165,7 +177,10 @@ STM32（控制流）与 ESP32-S3（视觉流）之间通过 UART 进行高频通
 
 ---
 
-### 3) 异步链式发送与驱动解耦（RB 设计）
+##  stm32控制侧
+
+
+### 1 ) 异步链式发送与驱动解耦（RB 设计）
 
 该工程的 I2C/SPI/UART 都使用 **统一的环形缓冲区 (RB) + 回调链式发送**，实现“上层无感知的异步输出”，核心实现在：
 - `applications/ring_buff.c/.h`
@@ -200,7 +215,7 @@ flowchart LR
 
 ---
 
-### 4) 控制策略设计
+### 2) 控制策略设计
 
 #### 控制流程图
 ```mermaid
@@ -214,7 +229,7 @@ flowchart LR
 	kalman[可选 Kalman 位置/速度估计] --> pos
 ```
 
-#### 4.1 级联 PID（位置环 + 速度环）
+#### 2.1 级联 PID（位置环 + 速度环）
 控制主逻辑位于 `_threads/servo_thread.c`：
 
 1. **外环：位置 PID**
@@ -229,25 +244,27 @@ flowchart LR
 - `pid->integral_range` 实现积分分离
 - `pid->output_limit` 实现输出限幅
 
-#### 4.2 可选 Kalman 位置滤波
-文件：`applications/kalman.c`，用于解决坐标数据微分噪声，提供平滑的速度估计：
+#### 2.2 可选 Kalman 位置滤波
+文件：`applications/kalman.c`，用于解决坐标数据噪声，提供平滑的速度估计：
 - **状态方程** (匀加速模型)：
-  $$ \hat{x}_{k} = x_{k-1} + v_{k-1} dt + \frac{1}{2} a_{imu} dt^2 $$
+   $$
+   \hat{x}_{k} = x_{k-1} + v_{k-1} dt + \frac{1}{2} a_{imu} dt^2
+   $$
 - **观测更新**：仅使用小球位置 $z_k$ 修正预测值，通过 $K = P H^T (H P H^T + R)^{-1}$ 更新后验估计。
 - **优化**：代码中手动展开了矩阵运算，避免了通用矩阵库的开销。
 
-#### 4.3 角度估计（互补滤波）
+#### 2.3 角度估计（互补滤波）
 文件：`applications/mpu6050.c`
 
 采用互补滤波：
 $$
-angle = \alpha (angle + gyro \cdot dt) + (1-\alpha) \cdot accel\_angle
+angle = \alpha (angle + gyro \cdot dt) + (1-\alpha) \cdot accel_{angle}
 $$
 当前参数：$\alpha=0.98$。
 
 ---
 
-### 5) 舵机驱动与编码器
+### 3) 舵机驱动与编码器
 
 #### 舵机驱动（PWM）
 文件：`applications/servo.c`
@@ -261,7 +278,7 @@ $$
 
 ---
 
-### 6) OLED 与按键交互
+### 4) OLED 与按键交互
 
 OLED 页面（见 `_threads/oled_thread.c`）：
 - **menu**：角度、CPU 占用、测试模式
@@ -273,7 +290,7 @@ OLED 页面（见 `_threads/oled_thread.c`）：
 
 ---
 
-### 7) 运行模式与状态机（控制侧）
+### 5) 运行模式与状态机（控制侧）
 
 控制线程内置多种模式，方便调试与在线标定：
 - **平台开关 (`test_mode`)**：在菜单页控制，关闭时**直接切断舵机 PWM 输出**，用于在不拆卸结构的情况下安全调试传感器数据。
@@ -284,18 +301,11 @@ OLED 页面（见 `_threads/oled_thread.c`）：
 
 ---
 
-##  ESP32 视觉侧（关键模块详述）
+##  ESP32 视觉侧
 
 
-### 1) 任务划分（FreeRTOS）
-| 任务 | 文件 | 优先级 | 频率/触发 | 作用 |
-|---|---|---|---|---|
-| `cam_task` | `main/task/cam_task.c` | 21 (高) | 50Hz (摄像头驱动) | 采集图像、二值化/裁剪、质心计算、发送坐标 |
-| `communicate_task` | `main/task/communicate_task.c` | 20 (中高) | 消息驱动 | UART 帧协议发送坐标/帧率 |
-| `lcd_task` | `main/task/lcd_task.c` | 19 (中) | 信号量驱动 | 将二值图像输出到 TFT，统计显示帧率 |
-| `shell_task` | `main/task/shell_task.c` | 5 (低) | 命令行输入驱动 | USB-JTAG 监控 shell（任务、堆栈、内存） |
 
-### 2) 图像处理与坐标提取
+### 1) 图像处理与坐标提取
 - 摄像头驱动：`main/drivers/my_ov7670.c`
   - **时序修正**：针对官方驱动初始化过快导致 Sensor ID 读取失败的问题，增加了手动硬件复位逻辑（PWDN↓ -> RESET↓ -> Delay -> RESET↑），确保 SCCB 总线就绪。
 - 图像格式：RGB565 / YUV422
@@ -305,13 +315,33 @@ OLED 页面（见 `_threads/oled_thread.c`）：
 	3. 输出质心 $(x,y)$，打包并送入 `xMailbox`
 	4. `communicate_task` 将坐标打包成 UART 帧发送
 
-### 3) SIMD 加速设计
-在 `cam_task.c` 中使用 Xtensa **TIE 指令集**（128-bit 向量寄存器 `q0-q7`）加速：
-- **并行流水线**：单指令周期完成 8 个像素的加载 (`ee.vld`)、阈值比较 (`ee.vsubs`) 与掩码生成。
-- **累加器加速**：利用 `accx` 与 `qacc` 寄存器并行计算一阶矩 (Moment) 与像素计数 (Area)，相比标量循环性能提升约 **6-8倍**，极大降低了 CPU 占用率。
-- **退化策略**：对齐检查失败时自动切换回标量 C 版本。
+### 2) SIMD 加速设计
+在 `cam_task.c` 中，针对“每帧都要做二值化 + 质心统计”这条热点路径，采用 Xtensa **TIE SIMD 指令**（128-bit 向量寄存器 `q0-q7`）进行专门优化。整体思路不是单纯“把 C 改成汇编”，而是先按数据流拆分瓶颈，再逐段向量化：
 
-### 4) 视觉流水线与并发协作
+#### 2.1 目标
+- 原始标量流程需要逐像素执行：读取 YUV → 阈值判断 → 生成二值位 → 统计面积与一阶矩。
+- 在 50FPS 采集目标下，原始标量流程**无法稳定跑满 50Hz**，会长期占用 CPU 并挤压 UART 与 LCD 任务时间片，导致帧率下滑与系统抖动。
+- 因此把“同构、可并行”的像素处理段抽出，作为 SIMD 专项优化对象。
+
+#### 2.2 向量化主路径（怎么做）
+1. **块化处理**：把图像按固定块（如每次 8 像素）读取，保证访存与计算批处理。
+2. **并行加载**：使用 `ee.vld` 一次装载多个像素通道数据，减少循环中的访存开销。
+3. **并行阈值比较**：使用 `ee.vsubs`/比较掩码指令并行完成阈值判断，得到二值结果位。
+4. **并行累加统计**：利用 `accx`、`qacc` 在同一轮循环中同步累计：
+   - 像素计数（Area）
+   - 一阶矩（$\sum x$, $\sum y$）
+5. **统一输出质心**：循环结束后再做一次标量收尾计算，得到最终坐标 $(x,y)$。
+
+#### 2.3 工程化配套（保证稳定而非只追求快）
+- **对齐检查**：进入 SIMD 路径前先检查缓冲区地址与步长对齐，避免未对齐访问带来的异常或性能回退。
+- **退化策略**：若对齐条件不满足，自动切换到标量 C 版本，保证功能正确性优先。
+- **任务解耦**：SIMD 仅负责“快算”，显示与通信仍走任务队列/信号量，避免把加速收益被任务竞态抵消。
+
+#### 2.4 实际收益（优化目标是否达成）
+- 相比标量实现，像素处理主循环性能提升约 **6-8 倍**（与分辨率、ROI 和阈值策略有关）。
+- 优化后可稳定支撑高帧率处理链路（接近/达到 50Hz 目标，取决于分辨率与 ROI 配置），同时 CPU 峰值占用明显下降，给 `communicate_task` 与 `lcd_task` 留出更稳定的调度余量。
+
+### 3) 视觉流水线与并发协作
 
 由于 **OV7670 采集帧率高达 50FPS**，而 **LCD 串行刷屏受限于 SPI 带宽仅约 17FPS**，系统采用了 **“计算不阻塞，显示丢帧”** 的异步策略。
 
@@ -339,7 +369,7 @@ sequenceDiagram
         end
     end
 ```
-*(如果你在普通文本编辑器中看到这些代码，请使用支持 Mermaid 的 Markdown 预览器查看流程图)*
+
 
 #### 关键同步机制详解
 1. **速率失配解耦**：
@@ -351,18 +381,13 @@ sequenceDiagram
    - `sem_cam`：仅当缓冲区更新完毕后释放，通知 LCD 任务开始下一帧刷新。
    - `xMailbox`：UART 发送队列，确保高频的坐标数据（50Hz）与低频的 FPS 数据（1Hz）有序进入发送总线，避免多任务竞争 UART 硬件资源。
 
-### 5) 坐标与帧率消息的封装
+### 4) 坐标与帧率消息的封装
 `cam_task.c` 与 `lcd_task.c` 会分别上报帧率，统一从 `xMailbox` 进入通信任务：
 - `type=1`: 摄像 FPS（`cam_task`）
 - `type=2`: 球坐标（`cam_task`）
 - `type=3`: 显示 FPS（`lcd_task`）
 
-### 6) ESP32 ↔ STM32 通信
-`communicate_task.c` 与 STM32 使用相同帧格式：
-- `0xAA 0xBB | seq | len | payload | crc8`
-- 具备 ACK 应答与超时重发
 
----
 
 ## ✅ STM32 与 ESP32 的模块解耦方式
 
