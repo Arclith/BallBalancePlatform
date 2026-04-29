@@ -276,21 +276,31 @@ flowchart LR
 **状态向量与运动模型**：状态为 $`x = [pos,\; vel]^T`$，采用匀加速运动模型，加速度 $`a`$ 作为控制输入，来源于 MPU6050 平台倾斜角换算的重力分量 $`a = g \cdot \sin(\theta)`$。
 
 **Predict（MPU 数据到达时 ≈ 1kHz）**：每次收到 MPU 数据，按以下公式外推状态：
-$$ \hat{x}_{k|k-1} = F \hat{x}_{k-1} + B a_{imu} $$
+
+$` \hat{x}_{k|k-1} = F \hat{x}_{k-1} + B a_{imu} `$
+
 其中 $`F = \begin{bmatrix} 1 & dt \\ 0 & 1 \end{bmatrix}`$，$`B = \begin{bmatrix} \frac{1}{2}dt^2 \\ dt \end{bmatrix}`$；同时预测协方差：
-$$ P_{k|k-1} = F P_{k-1} F^T + Q $$
+
+$` P_{k|k-1} = F P_{k-1} F^T + Q `$
 矩阵运算手工展开以避免数值库依赖。
 
 **Update（视觉坐标到达时 ≈ 50Hz）**：当新的位置测量 $`z_k`$ 到达时，首先计算新息（测量残差），即实测位置与预测位置的偏差：
-$$ y_k = z_k - H \hat{x}_{k|k-1}, \quad H = [1, 0] $$
+`$ y_k = z_k - H \hat{x}_{k|k-1}, \\quad H = [1, 0] `$
 然后计算新息协方差，用于衡量测量值的不确定度：
-$$ S_k = H P_{k|k-1} H^T + R $$
+
+$` S_k = H P_{k|k-1} H^T + R `$
+
 由此得到 Kalman 增益——它决定了预测和测量之间的信任权重分配：
-$$ K_k = P_{k|k-1} H^T S_k^{-1} $$
+
+$` K_k = P_{k|k-1} H^T S_k^{-1} `$
+
 用增益加权修正先验状态，得到后验状态估计：
-$$ \hat{x}_k = \hat{x}_{k|k-1} + K_k y_k $$
+
+$` \hat{x}_k = \hat{x}_{k|k-1} + K_k y_k `$
+
 最后更新协方差矩阵，降低后验不确定性：
-$$ P_k = (I - K_k H) P_{k|k-1} $$
+
+$` P_k = (I - K_k H) P_{k|k-1} `$
 因 $`H=[1,0]`$，Kalman 增益退化为标量，通过交叉协方差项 $`P[1][0]`$ 从位置残差中推断速度修正。
 
 **速度估计的核心优势**：不依赖位置差分（会放大噪声），而是通过协方差矩阵交叉项和 Kalman 增益，在测量噪声 $`\sigma_R`$ 与过程噪声 $`\sigma_Q`$ 之间自动寻求最优权衡，输出速度序列比差分法平滑一个数量级。
@@ -526,9 +536,8 @@ ee.notq       q0, q0       // q0 = ~q0                — 按位取反
 最终：**Y ≥ thr → 0xFFFF（目标）**，**Y < thr → 0x0000（背景）**。整个过程未使用任何分支指令（`bnez`/`bge` 等），CPU 流水线永不因分支预测失败而冲刷。
 
 ```mermaid
-flowchart TD
-    subgraph 无分支二值化流水线
-        direction TD
+flowchart LR
+        direction LR
         Y["Y分量"] --> SUB["vsubs.s16<br/>Y - thr"]
         SUB -->|"正数"| CLIP1["vmin.s16<br/>→ 0"]
         SUB -->|"负数"| CLIP2["vmin.s16<br/>→ 保持负数"]
@@ -536,7 +545,6 @@ flowchart TD
         CLIP2 --> CLIP4["vmax.s16<br/>max(负数, -1) → 0xFFFF"]
         CLIP3 --> NOT1["notq<br/>取反 → 0xFFFF"]
         CLIP4 --> NOT2["notq<br/>取反 → 0x0000"]
-    end
 ```
 
 ##### ③ 写回与转计数
